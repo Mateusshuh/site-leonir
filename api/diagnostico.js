@@ -2,8 +2,8 @@
    api/diagnostico.js — checagem rapida da instalacao
    ------------------------------------------------------------
    GET /api/diagnostico  → diz, em portugues, o que esta faltando
-   para a API funcionar: token do Blob, senha inicial e acesso ao
-   arquivo do catalogo.
+   para a API funcionar: acesso ao Blob, senha inicial, origem do
+   painel e o arquivo do catalogo.
 
    NAO devolve o valor de nenhuma senha nem do token — so o nome
    das variaveis e se elas existem.
@@ -18,53 +18,61 @@ export default async function handler(req, res){
   cors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
 
+  /* Ha dois jeitos de a funcao ter permissao no Blob:
+     - OIDC: o projeto e conectado ao store no painel da Vercel e
+       recebe BLOB_STORE_ID. E o padrao novo, e nao existe token
+       nenhum nas variaveis — isso e o certo, nao um problema.
+     - token estatico: uma variavel *_READ_WRITE_TOKEN, usada fora
+       da Vercel ou em conexoes antigas. */
+  const token   = nomeDoToken();
+  const storeId = !!process.env.BLOB_STORE_ID;
+
   const relatorio = {
-    tokenDoBlob:   { encontrado:false, variavel:null },
-    senhaInicial:  { definida: !!process.env.SENHA_ADMIN },
-    origemPainel:  { definida: !!process.env.ORIGEM_PAINEL, valor: process.env.ORIGEM_PAINEL || null },
-    arquivo:       { existe:false, leituraOk:false },
-    problemas:     []
+    acessoAoBlob: {
+      modo: token ? 'token na variavel ' + token
+          : storeId ? 'OIDC (projeto conectado ao store)'
+          : 'nenhum',
+      storeId
+    },
+    senhaInicial: { definida: !!process.env.SENHA_ADMIN },
+    origemPainel: { definida: !!process.env.ORIGEM_PAINEL, valor: process.env.ORIGEM_PAINEL || null },
+    arquivo:      { existe:false, leituraOk:false },
+    problemas:    []
   };
 
-  // 1. o token do Blob chegou nesta funcao?
-  const nome = nomeDoToken();
-  relatorio.tokenDoBlob = { encontrado: !!nome, variavel: nome };
-  if (!nome){
-    // so os NOMES das variaveis, nunca os valores — ajuda a ver o
-    // que a Vercel realmente criou ao conectar o store
+  if (!token && !storeId){
+    // so os NOMES das variaveis, nunca os valores
     relatorio.variaveisParecidas = Object.keys(process.env)
       .filter(k => /BLOB|TOKEN|STORE/i.test(k)).sort();
     relatorio.problemas.push(
-      'Nenhum token do Blob chegou nesta funcao. Abra o Blob Store, copie o ' +
-      'BLOB_READ_WRITE_TOKEN e cole a mao em Settings > Environment Variables ' +
-      'do projeto site-leonir, marcando os tres ambientes. Depois: Redeploy.'
+      'Esta funcao nao tem como provar quem e para o Blob: nao chegou nem ' +
+      'BLOB_STORE_ID (conexao do projeto) nem um token. Conecte o Blob Store ' +
+      'ao projeto em Storage > Projects > Connect to Project e faca um Redeploy.'
     );
     return res.status(200).json(relatorio);
   }
 
-  // 2. da para falar com o Blob e achar o arquivo do catalogo?
+  // O teste que vale: falar com o Blob de verdade.
   try {
     const url = await urlDoArquivo();
     relatorio.arquivo.existe = !!url;
 
     if (!url){
       relatorio.problemas.push(
-        'O Blob respondeu, mas o arquivo leonir/catalogo.json ainda nao existe. ' +
-        'Isso e normal antes do primeiro acesso: abra /api/catalogo uma vez que ele e criado.'
+        'O Blob respondeu certo, mas o arquivo leonir/catalogo.json ainda nao existe. ' +
+        'Isso e normal antes do primeiro uso: abra /api/catalogo uma vez que ele e criado.'
       );
     } else {
       const r = await fetch(`${url}?t=${Date.now()}`, { cache:'no-store' });
       relatorio.arquivo.leituraOk = r.ok;
-      if (!r.ok){
-        relatorio.problemas.push(`O arquivo existe mas nao pode ser lido (HTTP ${r.status}).`);
-      }
+      if (!r.ok) relatorio.problemas.push(`O arquivo existe mas nao pode ser lido (HTTP ${r.status}).`);
     }
   } catch (e){
     relatorio.problemas.push('Erro ao falar com o Blob: ' + String(e?.message || e));
     return res.status(200).json(relatorio);
   }
 
-  // 3. avisos que nao impedem o site, mas quebram o painel
+  // Avisos que nao impedem o site, mas quebram o painel.
   if (!relatorio.senhaInicial.definida){
     relatorio.problemas.push(
       'SENHA_ADMIN nao esta definida. Se o catalogo for criado agora, a senha do painel sera 123456.'
