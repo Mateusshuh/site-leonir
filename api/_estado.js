@@ -82,8 +82,12 @@ export function normalizarPneu(p){
    sozinha. Entao procuramos qualquer variavel com esse final. */
 export function nomeDoToken(){
   if (process.env.BLOB_READ_WRITE_TOKEN) return 'BLOB_READ_WRITE_TOKEN';
-  return Object.keys(process.env)
-    .find(k => k.endsWith('_READ_WRITE_TOKEN') && process.env[k]) || null;
+  const chaves = Object.keys(process.env);
+  return chaves.find(k => k.endsWith('_READ_WRITE_TOKEN') && process.env[k])
+      // ultimo recurso: todo token do Blob comeca com vercel_blob_rw_,
+      // entao achamos pelo valor mesmo que a variavel tenha outro nome
+      || chaves.find(k => String(process.env[k] || '').startsWith('vercel_blob_rw_'))
+      || null;
 }
 
 function token(){

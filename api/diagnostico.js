@@ -30,10 +30,14 @@ export default async function handler(req, res){
   const nome = nomeDoToken();
   relatorio.tokenDoBlob = { encontrado: !!nome, variavel: nome };
   if (!nome){
+    // so os NOMES das variaveis, nunca os valores — ajuda a ver o
+    // que a Vercel realmente criou ao conectar o store
+    relatorio.variaveisParecidas = Object.keys(process.env)
+      .filter(k => /BLOB|TOKEN|STORE/i.test(k)).sort();
     relatorio.problemas.push(
-      'Nenhuma variavel terminada em _READ_WRITE_TOKEN chegou nesta funcao. ' +
-      'Ligue um Blob Store ao projeto em Storage e depois faca um Redeploy: ' +
-      'variavel criada depois do deploy so vale no deploy seguinte.'
+      'Nenhum token do Blob chegou nesta funcao. Abra o Blob Store, copie o ' +
+      'BLOB_READ_WRITE_TOKEN e cole a mao em Settings > Environment Variables ' +
+      'do projeto site-leonir, marcando os tres ambientes. Depois: Redeploy.'
     );
     return res.status(200).json(relatorio);
   }
