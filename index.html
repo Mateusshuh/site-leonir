@@ -5,16 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lavagem e Borracharia do Leonir | Pneus e Estética Automotiva</title>
 <meta name="description" content="Venda de pneus das melhores marcas, borracharia e lava-rápido em Três de Maio/RS. Peça seu orçamento pelo WhatsApp.">
-<meta name="theme-color" content="#050912">
+<meta name="theme-color" content="#ffffff">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,500;1,600&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="img/logo.jpg" type="image/jpeg">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<div class="progress" id="scrollProgress"></div>
 
 <!-- ================= HEADER ================= -->
 <header class="header" id="header">
@@ -32,8 +31,8 @@
     <nav class="nav" id="nav">
       <a href="#pneus">Pneus</a>
       <a href="#servicos">Serviços</a>
+      <a href="#horarios">Horários</a>
       <a href="#galeria">Antes &amp; Depois</a>
-      <a href="#avaliacoes">Avaliações</a>
       <a href="#contato">Contato</a>
     </nav>
 
@@ -48,38 +47,40 @@
   </div>
 </header>
 
-<!-- ================= HERO ================= -->
+
+<!-- ================= BANNER ================= -->
 <section class="hero" id="inicio">
-  <div class="hero__bg" aria-hidden="true"></div>
-  <div class="container hero__inner">
-    <div class="hero__copy">
-      <span class="pill"><i class="dot"></i> Três de Maio · RS · Referência na região</span>
-      <h1>Pneus premium <em>e</em> o brilho que seu carro merece.</h1>
-      <p>Monte seu jogo de pneus em segundos, escolha a medida e envie direto para o WhatsApp do Leonir. Montagem, balanceamento e lavagem completa no mesmo lugar.</p>
-      <div class="hero__cta">
-        <a href="#pneus" class="btn btn--primary">Escolher meus pneus</a>
-        <a href="#galeria" class="btn btn--outline">Ver antes &amp; depois</a>
-      </div>
-      <div class="hero__stats">
-        <div><strong>5,0</strong><span>Nota no Google</span></div>
-        <div><strong>9+</strong><span>Avaliações</span></div>
-        <div><strong>100%</strong><span>Clientes satisfeitos</span></div>
-      </div>
+
+  <div class="hero__slides" id="heroSlides">
+    <div class="hero__slide is-active" data-slide="1">
+      <img src="img/banner/banner-1.jpg" alt="" onerror="this.remove()">
     </div>
-    <aside class="hero__card">
-      <h3>Atendimento rápido</h3>
-      <ul class="hero__list">
-        <li><span>Endereço</span> R. Horizontina, 1010</li>
-        <li><span>Cidade</span> Três de Maio · RS · 98910-000</li>
-        <li><span>Telefone</span> (55) 99945-0632</li>
-        <li><span>Horário</span> Seg a Sáb · 07:30 às 17:30</li>
-      </ul>
-      <a class="btn btn--wa btn--block" id="heroWa" href="#" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.04 2C6.6 2 2.2 6.4 2.2 11.84c0 1.9.5 3.68 1.4 5.22L2 22l5.06-1.56a9.8 9.8 0 0 0 4.98 1.35h.01c5.43 0 9.84-4.4 9.84-9.84S17.47 2 12.04 2Zm5.76 14.06c-.24.68-1.4 1.3-1.94 1.34-.5.05-.98.23-3.3-.69-2.78-1.1-4.53-3.95-4.67-4.14-.13-.19-1.11-1.48-1.11-2.82 0-1.34.7-2 .95-2.27.24-.27.53-.34.71-.34h.5c.16 0 .38-.06.6.46.23.55.78 1.9.85 2.04.07.13.11.29.02.48-.09.19-.14.3-.28.47-.14.16-.29.36-.41.48-.14.13-.28.28-.12.55.16.27.71 1.17 1.52 1.9 1.05.93 1.93 1.22 2.2 1.36.27.14.43.12.59-.07.16-.19.68-.79.86-1.06.18-.27.36-.23.6-.14.25.09 1.58.75 1.85.88.27.14.45.2.52.32.07.11.07.66-.17 1.34Z"/></svg>
-        Falar no WhatsApp agora
-      </a>
-      <p class="hero__note">Resposta média em poucos minutos no horário comercial.</p>
-    </aside>
+    <div class="hero__slide" data-slide="2">
+      <img src="img/banner/banner-2.jpg" alt="" onerror="this.remove()">
+    </div>
+    <div class="hero__slide" data-slide="3">
+      <img src="img/banner/banner-3.jpg" alt="" onerror="this.remove()">
+    </div>
+  </div>
+
+  <div class="container hero__inner">
+    <span class="hero__eyebrow">Pneus novos · Três de Maio / RS</span>
+    <h1 class="hero__title">Pneu novo,<br><em>estrada tranquila.</em></h1>
+    <p class="hero__sub">Escolha a medida do seu carro e chame o Leonir no WhatsApp.</p>
+    <a href="#pneus" class="hero__btn">Ver pneus <span aria-hidden="true">→</span></a>
+  </div>
+
+  <button class="hero__arrow" id="heroNext" aria-label="Próxima imagem"><span aria-hidden="true">→</span></button>
+
+  <div class="hero__dots" id="heroDots">
+    <button class="is-active" data-go="1" aria-label="Imagem 1"></button>
+    <button data-go="2" aria-label="Imagem 2"></button>
+    <button data-go="3" aria-label="Imagem 3"></button>
+  </div>
+
+  <div class="hero__selo">
+    <strong>Lavagem &amp; Borracharia do Leonir</strong>
+    <span>Montagem na hora · R. Horizontina, 1010</span>
   </div>
 </section>
 
@@ -153,31 +154,50 @@
   </div>
 </section>
 
+<!-- ================= HORÁRIOS ================= -->
+<section class="section" id="horarios">
+  <div class="container">
+    <div class="section__head">
+      <span class="eyebrow">Quando abrimos</span>
+      <h2>Horários de atendimento</h2>
+      <p>Venha sem compromisso — e se preferir, chame no WhatsApp antes para reservar seu horário.</p>
+    </div>
+
+    <div class="horarios">
+      <article class="hcard">
+        <div class="hcard__dia"><span aria-hidden="true">🕗</span><h3>Segunda a sexta-feira</h3></div>
+        <div class="hlinha"><b>Manhã</b><strong>07:30 — 11:45</strong></div>
+        <div class="hlinha"><b>Tarde</b><strong>13:30 — 17:45</strong></div>
+      </article>
+
+      <article class="hcard">
+        <div class="hcard__dia"><span aria-hidden="true">🕘</span><h3>Sábado</h3></div>
+        <div class="hlinha"><b>Manhã</b><strong>08:00 — 11:45</strong></div>
+        <div class="hlinha"><b>Tarde</b><strong>Fechado</strong></div>
+      </article>
+
+      <article class="hcard hcard--fechado">
+        <div class="hcard__dia"><span aria-hidden="true">🚪</span><h3>Domingo e feriados</h3></div>
+        <p>Fechado. Deixe sua mensagem no WhatsApp que respondemos no próximo dia útil.</p>
+      </article>
+    </div>
+
+    <div class="hnota">
+      <strong>Almoço:</strong> das 11:45 às 13:30 a oficina fica fechada.
+      <a class="btn btn--wa btn--sm" id="horarioWa" href="#" target="_blank" rel="noopener">Agendar pelo WhatsApp</a>
+    </div>
+  </div>
+</section>
+
 <!-- ================= GALERIA ANTES E DEPOIS ================= -->
-<section class="section" id="galeria">
+<section class="section section--alt" id="galeria">
   <div class="container">
     <div class="section__head">
       <span class="eyebrow">Resultados reais</span>
       <h2>Antes &amp; Depois</h2>
-      <p>Arraste a barra no centro de cada foto para ver a transformação da lavagem.</p>
+      <p>Seis trabalhos reais: à esquerda o carro como chegou, à direita o resultado depois da nossa lavagem.</p>
     </div>
     <div class="ba-grid" id="baGrid"></div>
-    <p class="ba-hint">📸 Para publicar as fotos reais, salve os arquivos na pasta <code>img/galeria/</code> com os nomes <code>antes-1.jpg</code>, <code>depois-1.jpg</code>, <code>antes-2.jpg</code>… (as imagens abaixo são demonstrativas e somem sozinhas quando as suas forem adicionadas).</p>
-  </div>
-</section>
-
-<!-- ================= AVALIAÇÕES ================= -->
-<section class="section section--alt" id="avaliacoes">
-  <div class="container">
-    <div class="section__head">
-      <span class="eyebrow">Google · 5,0 ★ · 9 avaliações</span>
-      <h2>Quem passa aqui, volta</h2>
-    </div>
-    <div class="reviews">
-      <figure class="review"><div class="stars">★★★★★</div><blockquote>Atendimento excelente e preço justo nos pneus. Serviço rápido e bem feito.</blockquote><figcaption>Cliente Google</figcaption></figure>
-      <figure class="review"><div class="stars">★★★★★</div><blockquote>Deixei o carro para lavar e voltou parecendo novo. Recomendo demais!</blockquote><figcaption>Cliente Google</figcaption></figure>
-      <figure class="review"><div class="stars">★★★★★</div><blockquote>Furei o pneu e fui super bem atendido. Gente honesta e caprichosa.</blockquote><figcaption>Cliente Google</figcaption></figure>
-    </div>
   </div>
 </section>
 
@@ -190,7 +210,7 @@
       <ul class="contact__list">
         <li><b>Endereço</b> R. Horizontina, 1010 — Três de Maio/RS, 98910-000</li>
         <li><b>Telefone / WhatsApp</b> <a href="tel:+5555999450632">(55) 99945-0632</a></li>
-        <li><b>Horário</b> Segunda a sexta 07:30–17:30 · Sábado 07:30–12:00</li>
+        <li><b>Horário</b> Seg a sex 07:30–11:45 e 13:30–17:45 · Sáb 08:00–11:45</li>
         <li><b>Instagram</b> <a href="https://instagram.com" target="_blank" rel="noopener">@lavagemdoleonir</a></li>
       </ul>
       <div class="contact__cta">

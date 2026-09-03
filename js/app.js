@@ -33,20 +33,20 @@ function tireSVG(){
   return `<svg class="card__tire" viewBox="0 0 120 120" aria-hidden="true">
     <defs>
       <radialGradient id="g1" cx="50%" cy="42%">
-        <stop offset="0%" stop-color="#2b3a58"/><stop offset="100%" stop-color="#080d18"/>
+        <stop offset="0%" stop-color="#41576f"/><stop offset="100%" stop-color="#1b2735"/>
       </radialGradient>
     </defs>
     <circle cx="60" cy="60" r="56" fill="url(#g1)"/>
-    <circle cx="60" cy="60" r="56" fill="none" stroke="#1a2740" stroke-width="2"/>
-    <g stroke="#101a2c" stroke-width="5">
+    <circle cx="60" cy="60" r="56" fill="none" stroke="#f2b93c" stroke-width="2"/>
+    <g stroke="#26374a" stroke-width="5">
       ${Array.from({length:24},(_,i)=>{
         const a=(i*15)*Math.PI/180, r1=38, r2=54;
         return `<line x1="${60+Math.cos(a)*r1}" y1="${60+Math.sin(a)*r1}" x2="${60+Math.cos(a)*r2}" y2="${60+Math.sin(a)*r2}"/>`;
       }).join('')}
     </g>
-    <circle cx="60" cy="60" r="34" fill="#0b1526" stroke="#25406e" stroke-width="2"/>
-    <circle cx="60" cy="60" r="22" fill="none" stroke="#5b90ff" stroke-width="3" opacity=".75"/>
-    <circle cx="60" cy="60" r="7"  fill="#5b90ff" opacity=".9"/>
+    <circle cx="60" cy="60" r="34" fill="#202d3d" stroke="#f2b93c" stroke-width="2"/>
+    <circle cx="60" cy="60" r="22" fill="none" stroke="#ef7527" stroke-width="3" opacity=".75"/>
+    <circle cx="60" cy="60" r="7"  fill="#f2b93c" opacity=".9"/>
   </svg>`;
 }
 
@@ -221,55 +221,47 @@ function montarMensagem(){
    ============================================================ */
 function placeholder(tipo, i){
   // Imagem de demonstração em SVG (data URI) — some quando você
-  // colocar as fotos reais em img/galeria/.
-  const sujo  = ['#1b2233','#2a3346','#0d1220'];
-  const limpo = ['#12305e','#2f6bff','#46d8ff'];
+  // colocar as fotos reais em img/antesedepois/.
+  const sujo  = ['#b9c3cf','#8f9dab','#d3dae2'];
+  const limpo = ['#f2b93c','#e8a02a','#ef7527'];
   const c = tipo === 'antes' ? sujo : limpo;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
     <defs><linearGradient id="a" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="${c[0]}"/><stop offset=".55" stop-color="${c[1]}"/><stop offset="1" stop-color="${c[2]}"/>
     </linearGradient></defs>
     <rect width="800" height="600" fill="url(#a)"/>
-    <g fill="none" stroke="rgba(255,255,255,.16)" stroke-width="3">
+    <g fill="none" stroke="rgba(30,42,56,.22)" stroke-width="3">
       <path d="M140 380h520M180 300c60-90 380-90 440 0"/>
       <circle cx="255" cy="395" r="52"/><circle cx="565" cy="395" r="52"/>
     </g>
-    <text x="400" y="520" fill="rgba(255,255,255,.5)" font-family="sans-serif" font-size="30"
+    <text x="400" y="520" fill="rgba(30,42,56,.55)" font-family="sans-serif" font-size="30"
       text-anchor="middle">${tipo === 'antes' ? 'ANTES' : 'DEPOIS'} — foto ${i}</text>
   </svg>`;
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
 
+
+/* Galeria: 6 quadros, metade "antes" e metade "depois". Sem animação. */
 function montarGaleria(){
   const grid = $('#baGrid');
   grid.innerHTML = CONFIG.galeriaFotos.map((f, idx) => {
     const i = idx + 1;
     return `<figure class="ba">
-      <div class="ba__view" style="--pos:50%">
-        <img class="ba__img ba__before" src="img/galeria/antes-${i}.jpg" alt="Antes da lavagem — ${f.titulo}"
-             onerror="this.onerror=null;this.src='${placeholder('antes', i)}'">
-        <img class="ba__img ba__after"  src="img/galeria/depois-${i}.jpg" alt="Depois da lavagem — ${f.titulo}"
-             onerror="this.onerror=null;this.src='${placeholder('depois', i)}'">
-        <span class="ba__label ba__label--l">Antes</span>
-        <span class="ba__label ba__label--r">Depois</span>
-        <span class="ba__handle"></span>
+      <div class="ba__par">
+        <div class="ba__lado">
+          <img src="img/antesedepois/antes-${i}.jpg" alt="Antes da lavagem — ${f.titulo}" loading="lazy"
+               onerror="this.onerror=null;this.src='${placeholder('antes', i)}'">
+          <span class="ba__tag">Antes</span>
+        </div>
+        <div class="ba__lado">
+          <img src="img/antesedepois/depois-${i}.jpg" alt="Depois da lavagem — ${f.titulo}" loading="lazy"
+               onerror="this.onerror=null;this.src='${placeholder('depois', i)}'">
+          <span class="ba__tag ba__tag--depois">Depois</span>
+        </div>
       </div>
       <figcaption class="ba__cap"><h3>${f.titulo}</h3><span>${f.legenda}</span></figcaption>
     </figure>`;
   }).join('');
-
-  $$('.ba__view', grid).forEach(view => {
-    let arrastando = false;
-    const mover = clientX => {
-      const r = view.getBoundingClientRect();
-      const pct = Math.min(100, Math.max(0, ((clientX - r.left) / r.width) * 100));
-      view.style.setProperty('--pos', pct + '%');
-    };
-    view.addEventListener('pointerdown', e => { arrastando = true; view.setPointerCapture(e.pointerId); mover(e.clientX); });
-    view.addEventListener('pointermove', e => { if (arrastando) mover(e.clientX); });
-    view.addEventListener('pointerup',   () => { arrastando = false; });
-    view.addEventListener('pointercancel', () => { arrastando = false; });
-  });
 }
 
 /* ============================================================
@@ -278,17 +270,28 @@ function montarGaleria(){
 function initUI(){
   // links de WhatsApp fixos
   const msgPadrao = `Olá, ${CONFIG.nomeLoja}! Vim pelo site e gostaria de mais informações.`;
-  ['#heroWa', '#contatoWa', '#fabWa'].forEach(sel => { const el = $(sel); if (el) el.href = waLink(msgPadrao); });
+  ['#heroWa', '#contatoWa', '#fabWa', '#horarioWa'].forEach(sel => { const el = $(sel); if (el) el.href = waLink(msgPadrao); });
 
   $('#year').textContent = new Date().getFullYear();
 
-  // header + barra de progresso
-  const header = $('#header'), bar = $('#scrollProgress');
-  const onScroll = () => {
-    header.classList.toggle('is-stuck', window.scrollY > 20);
-    const h = document.documentElement.scrollHeight - window.innerHeight;
-    bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
-  };
+  // carrossel do banner
+  const slides = $$('.hero__slide'), dots = $$('#heroDots button');
+  if (slides.length){
+    let atual = 0, timer;
+    const ir = i => {
+      atual = (i + slides.length) % slides.length;
+      slides.forEach((s, k) => s.classList.toggle('is-active', k === atual));
+      dots.forEach((d, k) => d.classList.toggle('is-active', k === atual));
+    };
+    const reiniciar = () => { clearInterval(timer); timer = setInterval(() => ir(atual + 1), 7000); };
+    dots.forEach((d, k) => d.addEventListener('click', () => { ir(k); reiniciar(); }));
+    $('#heroNext').addEventListener('click', () => { ir(atual + 1); reiniciar(); });
+    reiniciar();
+  }
+
+  // sombra no cabecalho ao rolar
+  const header = $("#header");
+  const onScroll = () => header.classList.toggle("is-stuck", window.scrollY > 20);
   window.addEventListener('scroll', onScroll, { passive:true }); onScroll();
 
   // menu mobile

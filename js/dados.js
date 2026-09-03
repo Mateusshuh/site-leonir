@@ -14,9 +14,9 @@ const CONFIG = {
   senhaAdmin: '123456',
   // Legendas das comparações "Antes e Depois" da página inicial.
   galeriaFotos: [
-    { titulo: 'Sedan preto — lavagem completa', legenda: 'Externa + interna · 1h30' },
-    { titulo: 'SUV branca — polimento', legenda: 'Polimento + cristalização · 3h' },
-    { titulo: 'Hatch — higienização interna', legenda: 'Bancos e carpetes · 2h' }
+    { titulo: 'Lavagem completa',        legenda: 'Externa + interna' },
+    { titulo: 'Polimento e cristalização', legenda: 'Brilho recuperado' },
+    { titulo: 'Higienização interna',    legenda: 'Bancos e carpetes' }
   ]
 };
 
