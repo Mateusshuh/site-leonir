@@ -47,6 +47,9 @@ export default async function handler(req, res){
 
   } catch (e){
     console.error('erro em /api/auth:', e);
-    return res.status(500).json({ erro: 'Falha ao falar com o servidor.' });
+    return res.status(500).json({
+      erro: 'Falha ao falar com o servidor.',
+      detalhe: String(e?.message || e)
+    });
   }
 }

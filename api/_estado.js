@@ -75,9 +75,25 @@ export function normalizarPneu(p){
   };
 }
 
+/* ---------- token do Blob ----------
+   Normalmente a Vercel cria BLOB_READ_WRITE_TOKEN sozinha ao ligar o
+   store no projeto. Mas se o store foi conectado com um prefixo, o
+   nome muda (ex: LEONIR_READ_WRITE_TOKEN) e a biblioteca nao acha
+   sozinha. Entao procuramos qualquer variavel com esse final. */
+export function nomeDoToken(){
+  if (process.env.BLOB_READ_WRITE_TOKEN) return 'BLOB_READ_WRITE_TOKEN';
+  return Object.keys(process.env)
+    .find(k => k.endsWith('_READ_WRITE_TOKEN') && process.env[k]) || null;
+}
+
+function token(){
+  const nome = nomeDoToken();
+  return nome ? process.env[nome] : undefined;
+}
+
 /* ---------- leitura e gravacao ---------- */
-async function urlDoArquivo(){
-  const { blobs } = await list({ prefix: ARQUIVO, limit: 100 });
+export async function urlDoArquivo(){
+  const { blobs } = await list({ prefix: ARQUIVO, limit: 100, token: token() });
   const achado = blobs.find(b => b.pathname === ARQUIVO);
   return achado ? achado.url : null;
 }
@@ -85,6 +101,7 @@ async function urlDoArquivo(){
 async function lerEstado(){
   const url = await urlDoArquivo();
   if (!url) return null;
+  // o ?t= muda a cada chamada, entao a CDN nunca devolve versao velha
   const r = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
   if (!r.ok) return null;
   try { return await r.json(); } catch { return null; }
@@ -96,7 +113,10 @@ export async function gravarEstado(estado){
     contentType: 'application/json',
     addRandomSuffix: false,
     allowOverwrite: true,
-    cacheControlMaxAge: 0
+    // 0 e recusado por algumas versoes da biblioteca; 60 e o menor
+    // valor sempre aceito, e o ?t= da leitura ja evita dado velho
+    cacheControlMaxAge: 60,
+    token: token()
   });
 }
 

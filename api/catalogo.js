@@ -48,6 +48,9 @@ export default async function handler(req, res){
 
   } catch (e){
     console.error('erro em /api/catalogo:', e);
-    return res.status(500).json({ erro: 'Falha ao acessar o catalogo no servidor.' });
+    return res.status(500).json({
+      erro: 'Falha ao acessar o catalogo no servidor.',
+      detalhe: String(e?.message || e)   // diz o motivo real, para nao ficar no escuro
+    });
   }
 }
