@@ -6,7 +6,7 @@
    admin.html
    ============================================================ */
 
-const PNEUS = carregarPneus();
+let PNEUS = [];
 
 
 /* ============================================================
@@ -58,9 +58,12 @@ const state = { aro:'todos', busca:'', ordem:'rel' };
 function montarChips(){
   const aros = [...new Set(PNEUS.map(p => p.aro))].sort((a,b)=>a-b);
 
+  // se o aro filtrado saiu do catálogo, volta para "todos"
+  if (state.aro !== 'todos' && !aros.some(a => String(a) === String(state.aro))) state.aro = 'todos';
+
   $('#chipsAro').innerHTML =
     ['todos', ...aros].map(v =>
-      `<button class="chip${v==='todos'?' is-active':''}" data-group="aro" data-val="${v}">${v==='todos'?'Todos os aros':'Aro '+v}</button>`
+      `<button class="chip${String(v)===String(state.aro)?' is-active':''}" data-group="aro" data-val="${v}">${v==='todos'?'Todos os aros':'Aro '+v}</button>`
     ).join('');
 
 
@@ -336,11 +339,50 @@ function initUI(){
   });
 }
 
-/* ---------- boot ---------- */
-document.addEventListener('DOMContentLoaded', () => {
+/* ============================================================
+   Catálogo vindo do painel
+   ------------------------------------------------------------
+   O que o Leonir muda no painel é gravado no servidor. Aqui a
+   página busca essa lista ao abrir e busca de novo quando o
+   visitante volta para a aba, para não mostrar preço vencido.
+   ============================================================ */
+let ultimaBusca = 0;
+
+async function atualizarCatalogo(){
+  // pneu sem estoque sai do site até ser reposto pelo painel
+  const lista = (await carregarPneus()).filter(p => p.estoque > 0);
+  ultimaBusca = Date.now();
+
+  // servidor fora do ar: mantém na tela o catálogo que já estava
+  if (!lista.length && PNEUS.length) return;
+
+  PNEUS = lista;
+
+  $('#emptyState').textContent = PNEUS.length
+    ? 'Nenhum pneu encontrado com esses filtros. Fale com a gente no WhatsApp que buscamos a medida para você.'
+    : 'Estamos atualizando o estoque. Fale com a gente no WhatsApp que buscamos a medida para você.';
+
   montarChips();
   render();
   renderCart();
+}
+
+/* ---------- boot ---------- */
+document.addEventListener('DOMContentLoaded', async () => {
+  // o que não depende do catálogo já pode aparecer na hora
   montarGaleria();
   initUI();
+
+  const aviso = $('#emptyState');
+  aviso.textContent = 'Carregando os pneus...';
+  aviso.hidden = false;
+
+  await atualizarCatalogo();
+
+  // voltou para a aba depois de um tempo? confere se mudou algo
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') return;
+    if (Date.now() - ultimaBusca < 60000) return;
+    atualizarCatalogo();
+  });
 });
