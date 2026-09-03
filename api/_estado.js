@@ -9,10 +9,15 @@
    Arquivos que comecam com "_" nao viram rota na Vercel.
    ============================================================ */
 
-import { put, list } from '@vercel/blob';
+import { put, get } from '@vercel/blob';
 import crypto from 'node:crypto';
 
 const ARQUIVO = 'leonir/catalogo.json';
+
+/* O store e privado: nada nele tem URL publica, e toda leitura passa
+   por esta funcao autenticada. E o certo aqui, porque o arquivo
+   guarda tambem o hash da senha do painel. */
+const ACESSO = 'private';
 
 /* ---------- CORS ----------
    O painel roda em outro dominio, entao precisa de permissao
@@ -95,31 +100,32 @@ function token(){
   return nome ? process.env[nome] : undefined;
 }
 
-/* ---------- leitura e gravacao ---------- */
-export async function urlDoArquivo(){
-  const { blobs } = await list({ prefix: ARQUIVO, limit: 100, token: token() });
-  const achado = blobs.find(b => b.pathname === ARQUIVO);
-  return achado ? achado.url : null;
+/* ---------- leitura e gravacao ----------
+   useCache:false e obrigatorio aqui: gravamos sempre no mesmo
+   caminho, e com o cache da CDN a leitura logo depois de uma
+   gravacao poderia devolver a versao anterior por ate 60s. */
+async function abrirArquivo(){
+  return get(ARQUIVO, { access: ACESSO, useCache: false, token: token() });
+}
+
+/* Existe? Da para ler? Usado pelo /api/diagnostico. */
+export async function checarArquivo(){
+  const r = await abrirArquivo();
+  return { existe: !!r, leituraOk: r?.statusCode === 200 };
 }
 
 async function lerEstado(){
-  const url = await urlDoArquivo();
-  if (!url) return null;
-  // o ?t= muda a cada chamada, entao a CDN nunca devolve versao velha
-  const r = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
-  if (!r.ok) return null;
-  try { return await r.json(); } catch { return null; }
+  const r = await abrirArquivo();          // null quando ainda nao existe
+  if (!r || r.statusCode !== 200 || !r.stream) return null;
+  try { return await new Response(r.stream).json(); } catch { return null; }
 }
 
 export async function gravarEstado(estado){
   await put(ARQUIVO, JSON.stringify(estado), {
-    access: 'public',
+    access: ACESSO,
     contentType: 'application/json',
     addRandomSuffix: false,
     allowOverwrite: true,
-    // 0 e recusado por algumas versoes da biblioteca; 60 e o menor
-    // valor sempre aceito, e o ?t= da leitura ja evita dado velho
-    cacheControlMaxAge: 60,
     token: token()
   });
 }

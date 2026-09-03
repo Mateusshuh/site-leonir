@@ -12,7 +12,7 @@
    apagado; nada mais depende dele.
    ============================================================ */
 
-import { cors, nomeDoToken, urlDoArquivo } from './_estado.js';
+import { cors, nomeDoToken, checarArquivo } from './_estado.js';
 
 export default async function handler(req, res){
   cors(req, res);
@@ -54,18 +54,15 @@ export default async function handler(req, res){
 
   // O teste que vale: falar com o Blob de verdade.
   try {
-    const url = await urlDoArquivo();
-    relatorio.arquivo.existe = !!url;
+    relatorio.arquivo = await checarArquivo();
 
-    if (!url){
+    if (!relatorio.arquivo.existe){
       relatorio.problemas.push(
         'O Blob respondeu certo, mas o arquivo leonir/catalogo.json ainda nao existe. ' +
         'Isso e normal antes do primeiro uso: abra /api/catalogo uma vez que ele e criado.'
       );
-    } else {
-      const r = await fetch(`${url}?t=${Date.now()}`, { cache:'no-store' });
-      relatorio.arquivo.leituraOk = r.ok;
-      if (!r.ok) relatorio.problemas.push(`O arquivo existe mas nao pode ser lido (HTTP ${r.status}).`);
+    } else if (!relatorio.arquivo.leituraOk){
+      relatorio.problemas.push('O arquivo existe mas nao pode ser lido.');
     }
   } catch (e){
     relatorio.problemas.push('Erro ao falar com o Blob: ' + String(e?.message || e));

@@ -20,10 +20,17 @@ img/banner/       → imagens grandes do banner de abertura
 
 ## A API
 
-O catálogo inteiro fica em um único arquivo JSON no **Vercel Blob**
+O catálogo inteiro fica em um único arquivo JSON num Blob Store **privado**
 (`leonir/catalogo.json`). Esse arquivo guarda também o embaralhado da
 senha do painel (scrypt + salt), para que a senha nunca apareça no
 código que o navegador baixa.
+
+O store precisa ser privado: nada nele tem URL pública, e toda leitura
+passa pelo `get()` autenticado dentro da função — é por isso que o hash
+da senha pode morar junto do catálogo. A gravação usa
+`access: 'private'`, e a leitura usa `useCache: false`, senão o site
+poderia ver por até 60 segundos a versão anterior de um preço que o
+painel acabou de mudar.
 
 | Rota | Método | Quem usa | O que faz |
 |---|---|---|---|
