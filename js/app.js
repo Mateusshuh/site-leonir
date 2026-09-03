@@ -270,7 +270,7 @@ function montarGaleria(){
 function initUI(){
   // links de WhatsApp fixos
   const msgPadrao = `Olá, ${CONFIG.nomeLoja}! Vim pelo site e gostaria de mais informações.`;
-  ['#heroWa', '#contatoWa', '#fabWa', '#horarioWa'].forEach(sel => { const el = $(sel); if (el) el.href = waLink(msgPadrao); });
+  ['#heroWa', '#contatoWa', '#fabWa'].forEach(sel => { const el = $(sel); if (el) el.href = waLink(msgPadrao); });
 
   $('#year').textContent = new Date().getFullYear();
 

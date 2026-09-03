@@ -87,7 +87,7 @@ p{ margin:0 0 1em; }
 .header.is-stuck{ padding:9px 0; background:rgba(255,255,255,.96); box-shadow:0 8px 26px rgba(23,34,47,.08); }
 .header__inner{ display:flex; align-items:center; gap:24px; }
 .brand{ display:flex; align-items:center; gap:12px; margin-right:auto; }
-.brand__text strong{ display:block; font-family:var(--fd); font-size:19px; letter-spacing:.02em; color:var(--ink); }
+.brand__text strong{ display:block; font-family:var(--fd); font-size:19px; letter-spacing:.02em; color:var(--ink); white-space:nowrap; }
 .brand__text small{ display:block; font-size:11px; color:var(--blue-soft); letter-spacing:.22em; text-transform:uppercase; font-weight:700; }
 
 .nav{ display:flex; gap:4px; }
@@ -272,11 +272,6 @@ p{ margin:0 0 1em; }
 .hlinha b{ font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--blue-soft); font-weight:800; }
 .hlinha strong{ font-family:var(--fd); font-size:20px; color:var(--ink); white-space:nowrap; }
 .hcard--fechado p{ color:var(--muted); margin:0; font-size:15px; }
-.hnota{ margin-top:26px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-  padding:20px 24px; border-radius:var(--radius); border:1px solid var(--line);
-  background:rgba(242,185,60,.14); color:var(--muted); font-size:15px; }
-.hnota strong{ color:var(--ink); }
-.hnota .btn{ margin-left:auto; }
 
 /* ---------- antes e depois (3 comparacoes lado a lado, como os pneus) ---------- */
 .ba-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
@@ -393,6 +388,9 @@ p{ margin:0 0 1em; }
   .btn--cart span:not(.badge){ display:none; }
 }
 @media (max-width:600px){
+  /* o nome da loja e maior agora, entao encolhe um pouco no celular */
+  .brand__text strong{ font-size:16px; }
+  .brand__text small{ font-size:10px; letter-spacing:.18em; }
   .hero{ padding:130px 0 70px; }
   .section{ padding:70px 0; }
   .hero__stats{ gap:26px; }
