@@ -76,8 +76,20 @@ export function normalizarPneu(p){
     precoDe: p?.precoDe === null || p?.precoDe === '' || isNaN(Number(p?.precoDe)) ? null : Number(p.precoDe),
     estoque: Number.isFinite(Number(p?.estoque)) ? Math.max(0, Math.round(Number(p.estoque))) : 0,
     tag:     ['promo','novo'].includes(p?.tag) ? p.tag : null,
-    specs:   Array.isArray(p?.specs) ? p.specs.filter(Boolean).map(s => String(s).slice(0, 60)).slice(0, 12) : []
+    specs:   Array.isArray(p?.specs) ? p.specs.filter(Boolean).map(s => String(s).slice(0, 60)).slice(0, 12) : [],
+    foto:    fotoValida(p?.foto)
   };
+}
+
+/* Foto do pneu: aceita um endereco https ou a imagem embutida
+   (data:image/...). Qualquer outra coisa vira string vazia, para
+   nao guardar lixo nem script no lugar da imagem. */
+export function fotoValida(v){
+  const s = String(v || '').trim();
+  if (!s || s.length > 400000) return '';
+  if (/^https:\/\//i.test(s)) return s.slice(0, 600);
+  if (/^data:image\/(png|jpeg|jpg|webp);base64,[A-Za-z0-9+/=]+$/i.test(s)) return s;
+  return '';
 }
 
 /* ---------- token do Blob ----------

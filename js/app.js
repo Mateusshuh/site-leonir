@@ -28,28 +28,6 @@ function waLink(texto){
   return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(texto)}`;
 }
 
-/* SVG de pneu usado como imagem do card (sem depender de arquivos) */
-function tireSVG(){
-  return `<svg class="card__tire" viewBox="0 0 120 120" aria-hidden="true">
-    <defs>
-      <radialGradient id="g1" cx="50%" cy="42%">
-        <stop offset="0%" stop-color="#41576f"/><stop offset="100%" stop-color="#1b2735"/>
-      </radialGradient>
-    </defs>
-    <circle cx="60" cy="60" r="56" fill="url(#g1)"/>
-    <circle cx="60" cy="60" r="56" fill="none" stroke="#f2b93c" stroke-width="2"/>
-    <g stroke="#26374a" stroke-width="5">
-      ${Array.from({length:24},(_,i)=>{
-        const a=(i*15)*Math.PI/180, r1=38, r2=54;
-        return `<line x1="${60+Math.cos(a)*r1}" y1="${60+Math.sin(a)*r1}" x2="${60+Math.cos(a)*r2}" y2="${60+Math.sin(a)*r2}"/>`;
-      }).join('')}
-    </g>
-    <circle cx="60" cy="60" r="34" fill="#202d3d" stroke="#f2b93c" stroke-width="2"/>
-    <circle cx="60" cy="60" r="22" fill="none" stroke="#ef7527" stroke-width="3" opacity=".75"/>
-    <circle cx="60" cy="60" r="7"  fill="#f2b93c" opacity=".9"/>
-  </svg>`;
-}
-
 /* ============================================================
    Catálogo + filtros
    ============================================================ */
@@ -97,7 +75,9 @@ function render(){
     <article class="card" data-id="${p.id}">
       <div class="card__media">
         ${p.tag ? `<span class="tag tag--${p.tag}">${p.tag === 'promo' ? 'Promoção' : 'Novidade'}</span>` : ''}
-        ${tireSVG()}
+        ${p.foto
+          ? `<img class="card__foto" src="${p.foto}" alt="${p.marca} ${p.modelo}" loading="lazy">`
+          : '<span class="card__semfoto">Foto em breve</span>'}
       </div>
       <div class="card__body">
         <span class="card__brand">${p.marca}</span>

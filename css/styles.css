@@ -214,11 +214,10 @@ p{ margin:0 0 1em; }
 }
 .card.is-in{ opacity:1; transform:none; }
 .card:hover{ transform:translateY(-6px); border-color:var(--gold); box-shadow:var(--glow); }
-.card__media{ position:relative; height:186px; display:grid; place-items:center;
-  background:radial-gradient(60% 70% at 50% 40%, rgba(242,185,60,.22), transparent 70%), var(--navy-800);
-  border-bottom:1px solid var(--line-soft); }
-.card__tire{ width:132px; height:132px; filter:drop-shadow(0 14px 20px rgba(23,34,47,.25)); transition:transform .5s ease; }
-.card:hover .card__tire{ transform:rotate(120deg); }
+.card__media{ position:relative; height:210px; display:grid; place-items:center; overflow:hidden;
+  background:var(--navy-800); border-bottom:1px solid var(--line-soft); }
+.card__foto{ width:100%; height:100%; object-fit:cover; display:block; }
+.card__semfoto{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted-2); }
 .tag{ position:absolute; top:12px; left:12px; padding:6px 12px; border-radius:999px; font:800 11px var(--ff);
   letter-spacing:.1em; text-transform:uppercase; }
 .tag--promo{ background:linear-gradient(135deg,#f2b93c,#d99a1e); color:#20160a; }
