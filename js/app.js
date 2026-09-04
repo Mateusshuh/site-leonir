@@ -257,21 +257,6 @@ function initUI(){
 
   $('#year').textContent = new Date().getFullYear();
 
-  // carrossel do banner
-  const slides = $$('.hero__slide'), dots = $$('#heroDots button');
-  if (slides.length){
-    let atual = 0, timer;
-    const ir = i => {
-      atual = (i + slides.length) % slides.length;
-      slides.forEach((s, k) => s.classList.toggle('is-active', k === atual));
-      dots.forEach((d, k) => d.classList.toggle('is-active', k === atual));
-    };
-    const reiniciar = () => { clearInterval(timer); timer = setInterval(() => ir(atual + 1), 7000); };
-    dots.forEach((d, k) => d.addEventListener('click', () => { ir(k); reiniciar(); }));
-    $('#heroNext').addEventListener('click', () => { ir(atual + 1); reiniciar(); });
-    reiniciar();
-  }
-
   // sombra no cabecalho ao rolar
   const header = $("#header");
   const onScroll = () => header.classList.toggle("is-stuck", window.scrollY > 20);

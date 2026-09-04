@@ -125,20 +125,15 @@ p{ margin:0 0 1em; }
   position:relative; min-height:clamp(560px, 88vh, 860px); display:flex; align-items:center;
   overflow:hidden; background:#1b2735; margin-top:82px;
 }
-.hero__slides{ position:absolute; inset:0; }
-.hero__slide{
-  position:absolute; inset:0; opacity:0; transition:opacity .9s ease;
+.hero__foto{
+  position:absolute; inset:0;
   background:linear-gradient(135deg,#2b3a4e 0%, #1b2735 45%, #3a2a12 100%);
 }
-.hero__slide:nth-child(2){ background:linear-gradient(135deg,#33455c 0%, #1b2735 55%, #4a3110 100%); }
-.hero__slide:nth-child(3){ background:linear-gradient(135deg,#22303f 0%, #24313f 40%, #5a3a12 100%); }
-.hero__slide.is-active{ opacity:1; }
-.hero__slide img{ width:100%; height:100%; object-fit:cover; }
-.hero__slides::after{
+.hero__foto img{ width:100%; height:100%; object-fit:cover; }
+.hero__foto::after{
   content:''; position:absolute; inset:0; pointer-events:none;
   background:linear-gradient(90deg, rgba(15,22,31,.86) 0%, rgba(15,22,31,.60) 45%, rgba(15,22,31,.30) 100%);
 }
-
 .hero__inner{ position:relative; z-index:2; }
 .hero__eyebrow{
   display:block; font-size:12.5px; letter-spacing:.28em; text-transform:uppercase;
@@ -156,21 +151,6 @@ p{ margin:0 0 1em; }
   box-shadow:0 14px 34px rgba(0,0,0,.28); transition:.22s;
 }
 .hero__btn:hover{ transform:translateY(-2px); background:#f2b93c; color:#20160a; }
-
-.hero__arrow{
-  position:absolute; right:34px; top:50%; translate:0 -50%; z-index:3;
-  width:56px; height:56px; border-radius:50%; cursor:pointer; font-size:20px;
-  border:1px solid rgba(255,255,255,.55); background:rgba(255,255,255,.08); color:#fff;
-  backdrop-filter:blur(4px); transition:.22s;
-}
-.hero__arrow:hover{ background:#fff; color:var(--ink); }
-
-.hero__dots{ position:absolute; left:50%; bottom:30px; translate:-50% 0; z-index:3; display:flex; gap:12px; }
-.hero__dots button{
-  width:11px; height:11px; border-radius:50%; cursor:pointer; padding:0;
-  border:1px solid rgba(255,255,255,.75); background:transparent; transition:.22s;
-}
-.hero__dots button.is-active{ background:#fff; transform:scale(1.15); }
 
 .hero__selo{ position:absolute; right:34px; bottom:26px; z-index:3; text-align:right; }
 .hero__selo strong{
@@ -402,9 +382,8 @@ p{ margin:0 0 1em; }
 /* ---------- ajustes do banner em telas menores ---------- */
 @media (max-width:980px){
   .hero{ min-height:78vh; margin-top:76px; }
-  .hero__arrow{ right:18px; width:48px; height:48px; }
   .hero__selo{ display:none; }
-  .hero__slides::after{
+  .hero__foto::after{
     background:linear-gradient(180deg, rgba(15,22,31,.55) 0%, rgba(15,22,31,.82) 100%);
   }
 }
