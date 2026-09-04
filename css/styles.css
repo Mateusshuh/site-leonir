@@ -249,12 +249,10 @@ p{ margin:0 0 1em; }
 
 /* ---------- serviços ---------- */
 .services{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
-.svc{ padding:28px; border-radius:var(--radius); border:1px solid var(--line); background:#fff;
+.svc{ padding:30px; border-radius:var(--radius); border:1px solid var(--line); background:#fff;
   box-shadow:0 6px 18px rgba(23,34,47,.05); transition:.25s; }
 .svc:hover{ transform:translateY(-5px); border-color:var(--gold); box-shadow:var(--glow); }
-.svc__ico{ font-size:30px; width:58px; height:58px; display:grid; place-items:center; border-radius:16px;
-  background:rgba(242,185,60,.20); border:1px solid var(--line-soft); margin-bottom:16px; }
-.svc h3{ font-size:18px; }
+.svc h3{ font-size:18px; margin-bottom:10px; }
 .svc p{ color:var(--muted); font-size:15px; margin:0; }
 
 /* ---------- horários ---------- */

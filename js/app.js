@@ -124,7 +124,7 @@ function addItem(id){
   if (item) item.qtd++;
   else cart.push({ id, qtd: 1 });
   salvar(); renderCart();
-  toast('Pneu adicionado ao orçamento 🛞');
+  toast('Pneu adicionado ao orçamento.');
 }
 
 function setQtd(id, delta){
@@ -149,7 +149,7 @@ function renderCart(){
   $('#cartTotal').textContent = brl(totalCart());
 
   if (!cart.length){
-    box.innerHTML = `<p class="cart-empty">Seu orçamento está vazio.<br>Escolha seus pneus no catálogo 🛞</p>`;
+    box.innerHTML = `<p class="cart-empty">Seu orçamento está vazio.<br>Escolha seus pneus no catálogo.</p>`;
     return;
   }
 
@@ -187,7 +187,7 @@ function montarMensagem(){
   linhas.push('');
   cart.forEach(i => {
     const p = PNEUS.find(x => x.id === i.id);
-    if (p) linhas.push(`• ${i.qtd}x ${p.marca} ${p.modelo} — ${p.medida} (${brl(p.preco)} cada)`);
+    if (p) linhas.push(`• ${i.qtd}x ${p.marca} ${p.modelo} ${p.medida} (${brl(p.preco)} cada)`);
   });
   linhas.push('');
   linhas.push(`Total estimado: ${brl(totalCart())}`);
@@ -218,13 +218,13 @@ function placeholder(tipo, i){
       <circle cx="255" cy="395" r="52"/><circle cx="565" cy="395" r="52"/>
     </g>
     <text x="400" y="520" fill="rgba(30,42,56,.55)" font-family="sans-serif" font-size="30"
-      text-anchor="middle">${tipo === 'antes' ? 'ANTES' : 'DEPOIS'} — foto ${i}</text>
+      text-anchor="middle">${tipo === 'antes' ? 'ANTES' : 'DEPOIS'} ${i}</text>
   </svg>`;
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
 
 
-/* Galeria: 6 quadros, metade "antes" e metade "depois". Sem animação. */
+/* Galeria: 3 quadros, metade "antes" e metade "depois". Sem animacao. */
 function montarGaleria(){
   const grid = $('#baGrid');
   grid.innerHTML = CONFIG.galeriaFotos.map((f, idx) => {
@@ -232,12 +232,12 @@ function montarGaleria(){
     return `<figure class="ba">
       <div class="ba__par">
         <div class="ba__lado">
-          <img src="img/antesedepois/antes-${i}.jpg" alt="Antes da lavagem — ${f.titulo}" loading="lazy"
+          <img src="img/antesedepois/antes-${i}.jpg" alt="Antes da lavagem: ${f.titulo}" loading="lazy"
                onerror="this.onerror=null;this.src='${placeholder('antes', i)}'">
           <span class="ba__tag">Antes</span>
         </div>
         <div class="ba__lado">
-          <img src="img/antesedepois/depois-${i}.jpg" alt="Depois da lavagem — ${f.titulo}" loading="lazy"
+          <img src="img/antesedepois/depois-${i}.jpg" alt="Depois da lavagem: ${f.titulo}" loading="lazy"
                onerror="this.onerror=null;this.src='${placeholder('depois', i)}'">
           <span class="ba__tag ba__tag--depois">Depois</span>
         </div>
@@ -253,7 +253,7 @@ function montarGaleria(){
 function initUI(){
   // links de WhatsApp fixos
   const msgPadrao = `Olá, ${CONFIG.nomeLoja}! Vim pelo site e gostaria de mais informações.`;
-  ['#heroWa', '#contatoWa', '#fabWa'].forEach(sel => { const el = $(sel); if (el) el.href = waLink(msgPadrao); });
+  ['#heroWa', '#contatoWa', '#fabWa', '#horarioWa'].forEach(sel => { const el = $(sel); if (el) el.href = waLink(msgPadrao); });
 
   $('#year').textContent = new Date().getFullYear();
 
