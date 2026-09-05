@@ -15,6 +15,9 @@ let PNEUS = [];
 const $  = (s, ctx = document) => ctx.querySelector(s);
 const $$ = (s, ctx = document) => [...ctx.querySelectorAll(s)];
 const brl = n => n.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+/* o catalogo vem do painel: escapamos antes de escrever na pagina */
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 
 function toast(msg){
   const el = $('#toast');
@@ -76,14 +79,14 @@ function render(){
       <div class="card__media">
         ${p.tag ? `<span class="tag tag--${p.tag}">${p.tag === 'promo' ? 'Promoção' : 'Novidade'}</span>` : ''}
         ${p.foto
-          ? `<img class="card__foto" src="${p.foto}" alt="${p.marca} ${p.modelo}" loading="lazy">`
+          ? `<img class="card__foto" src="${esc(p.foto)}" alt="Pneu ${esc(p.marca)} ${esc(p.modelo)}" loading="lazy" decoding="async">`
           : '<span class="card__semfoto">Foto em breve</span>'}
       </div>
       <div class="card__body">
-        <span class="card__brand">${p.marca}</span>
-        <h3 class="card__name">${p.modelo}</h3>
-        <span class="card__size">Aro ${p.aro} · ${p.medida}</span>
-        <div class="card__specs">${p.specs.map(s => `<span class="spec">${s}</span>`).join('')}</div>
+        <span class="card__brand">${esc(p.marca)}</span>
+        <h3 class="card__name">${esc(p.modelo)}</h3>
+        <span class="card__size">Aro ${p.aro} · ${esc(p.medida)}</span>
+        <div class="card__specs">${p.specs.map(s => `<span class="spec">${esc(s)}</span>`).join('')}</div>
         <span class="stock ${p.estoque > 3 ? 'stock--ok' : p.estoque > 0 ? 'stock--low' : 'stock--out'}">
           ${p.estoque > 3 ? 'Em estoque' : p.estoque > 0 ? `Últimas ${p.estoque} unidades` : 'Sob encomenda'}
         </span>
@@ -93,7 +96,7 @@ function render(){
             <strong>${brl(p.preco)}</strong>
             <span>por pneu · montagem inclusa</span>
           </div>
-          <button class="add" data-add="${p.id}" aria-label="Adicionar ${p.marca} ${p.modelo} ao orçamento">+</button>
+          <button class="add" type="button" data-add="${p.id}" aria-label="Adicionar ${esc(p.marca)} ${esc(p.modelo)} ao orçamento">+</button>
         </div>
       </div>
     </article>`).join('');
@@ -156,18 +159,19 @@ function renderCart(){
   box.innerHTML = cart.map(i => {
     const p = PNEUS.find(x => x.id === i.id);
     if (!p) return '';
+    const nome = `${esc(p.marca)} ${esc(p.modelo)}`;
     return `<div class="ci">
       <div>
-        <h4>${p.marca} ${p.modelo}</h4>
-        <small>${p.medida}</small>
+        <h4>${nome}</h4>
+        <small>${esc(p.medida)}</small>
       </div>
       <div class="ci__price">${brl(p.preco * i.qtd)}</div>
       <div class="ci__qty">
-        <button data-minus="${p.id}" aria-label="Diminuir">−</button>
-        <span>${i.qtd}</span>
-        <button data-plus="${p.id}" aria-label="Aumentar">+</button>
+        <button type="button" data-minus="${p.id}" aria-label="Diminuir a quantidade de ${nome}">−</button>
+        <span aria-label="${i.qtd} unidades">${i.qtd}</span>
+        <button type="button" data-plus="${p.id}" aria-label="Aumentar a quantidade de ${nome}">+</button>
       </div>
-      <button class="ci__del" data-del="${p.id}">remover</button>
+      <button class="ci__del" type="button" data-del="${p.id}" aria-label="Remover ${nome} do orçamento">Remover</button>
     </div>`;
   }).join('');
 
@@ -264,12 +268,15 @@ function initUI(){
 
   // menu mobile
   const burger = $('#burger'), nav = $('#nav');
-  burger.addEventListener('click', () => {
-    nav.classList.toggle('is-open'); burger.classList.toggle('is-open');
-  });
-  $$('.nav a').forEach(a => a.addEventListener('click', () => {
-    nav.classList.remove('is-open'); burger.classList.remove('is-open');
-  }));
+  const menu = aberto => {
+    nav.classList.toggle('is-open', aberto);
+    burger.classList.toggle('is-open', aberto);
+    burger.setAttribute('aria-expanded', String(aberto));
+    burger.setAttribute('aria-label', aberto ? 'Fechar o menu' : 'Abrir o menu');
+  };
+  burger.addEventListener('click', () => menu(!nav.classList.contains('is-open')));
+  $$('.nav a').forEach(a => a.addEventListener('click', () => menu(false)));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') menu(false); });
 
   // link ativo conforme a seção visível
   const secoes = $$('section[id]');
@@ -283,8 +290,20 @@ function initUI(){
 
   // drawer
   const drawer = $('#cartDrawer'), back = $('#drawerBackdrop');
-  const abrir = () => { drawer.classList.add('is-open'); back.classList.add('is-open'); drawer.setAttribute('aria-hidden','false'); };
-  const fechar = () => { drawer.classList.remove('is-open'); back.classList.remove('is-open'); drawer.setAttribute('aria-hidden','true'); };
+  const btnCart = $('#openCart');
+  const abrir = () => {
+    drawer.classList.add('is-open'); back.classList.add('is-open');
+    drawer.setAttribute('aria-hidden','false');
+    btnCart.setAttribute('aria-expanded','true');
+    setTimeout(() => $('#closeCart').focus(), 60);   // o teclado entra no painel
+  };
+  const fechar = () => {
+    if (!drawer.classList.contains('is-open')) return;
+    drawer.classList.remove('is-open'); back.classList.remove('is-open');
+    drawer.setAttribute('aria-hidden','true');
+    btnCart.setAttribute('aria-expanded','false');
+    btnCart.focus();                                 // e volta de onde saiu
+  };
   $('#openCart').addEventListener('click', abrir);
   $('#closeCart').addEventListener('click', fechar);
   back.addEventListener('click', fechar);
@@ -330,6 +349,7 @@ async function atualizarCatalogo(){
   montarChips();
   render();
   renderCart();
+  $('#tireGrid').setAttribute('aria-busy', 'false');
 }
 
 /* ---------- boot ---------- */
@@ -339,7 +359,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initUI();
 
   const aviso = $('#emptyState');
-  aviso.textContent = 'Carregando os pneus...';
+  aviso.textContent = 'Carregando os pneus…';
   aviso.hidden = false;
 
   await atualizarCatalogo();
